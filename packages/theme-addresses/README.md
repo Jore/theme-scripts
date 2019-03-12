@@ -25,6 +25,24 @@ If you prefer not to use a package manager, you can download the latest version 
 - [theme-addresses.js](http://unpkg.com/@shopify/theme-addresses@latest/dist/theme-addresses.js)
 - [theme-addresses.min.js](http://unpkg.com/@shopify/theme-addresses@latest/dist/theme-addresses.min.js)
 
+## Browser Support
+
+Theme Addresses uses the Fetch API which is not available to legacy browsers. If you wish to support legacy browsers, make sure you add the following dependencies to your project:
+
+```es6
+yarn add unfetch
+```
+
+and then import them before you import Theme Addresses:
+
+```es6
+// Only need to import these once
+import 'unfetch/polyfill';
+
+// Import @shopify/theme-address anywhere you need it
+import {AddressForm} from '@shopify/theme-addresses';
+```
+
 ## Methods
 
 ### `AddressForm(rootElement, locale, options)`
