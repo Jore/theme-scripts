@@ -1,10 +1,10 @@
 import {loadCountries, Country} from './loader';
-import { FromEventTarget } from 'rxjs/internal/observable/fromEvent';
+import {mergeObjects} from './helpers';
 
 var COUNTRIES: Country[];
 var FIELD_REGEXP = /({\w+})/g;
 var LINE_DELIMITER = '_';
-var INPUT_SELECTORS = {
+var INPUT_SELECTORS: InputSelectors = {
   lastName: '[name="address[last_name]"]',
   firstName: '[name="address[first_name]"]',
   company: '[name="address[company]"]',
@@ -16,6 +16,19 @@ var INPUT_SELECTORS = {
   city: '[name="address[city]"]',
   phone: '[name="address[phone]"]',
 };
+
+interface InputSelectors {
+  lastName?: string;
+  firstName?: string;
+  company?: string;
+  address1?: string;
+  address2?: string;
+  country?: string;
+  zone?: string;
+  postalCode?: string;
+  city?: string;
+  phone?: string;
+}
 
 interface FormElement {
   wrapper?: HTMLElement;
@@ -38,14 +51,19 @@ interface FormElements {
 
 interface AddressFormOptions {
   loaded?(): void;
+  inputSelectors: InputSelectors;
 }
 
 export default function AddressForm(
   rootEl: HTMLElement,
   locale: string = 'en',
-  options: AddressFormOptions = {},
+  options: AddressFormOptions = {inputSelectors: {}}
 ) {
-  var formElements = loadFormElements(rootEl);
+  var formElements = loadFormElements(
+    rootEl,
+    mergeObjects(INPUT_SELECTORS, options.inputSelectors)
+  );
+
   validateElements(formElements);
 
   if (COUNTRIES) {
@@ -61,7 +79,11 @@ export default function AddressForm(
 /**
  * Runs when countries have been loaded
  */
-function init(rootEl: HTMLElement, formElements: FormElements, options: AddressFormOptions) {
+function init(
+  rootEl: HTMLElement,
+  formElements: FormElements,
+  options: AddressFormOptions
+) {
   populateCountries(formElements);
   var selectedCountry = formElements.country.input
     ? formElements.country.input.value
@@ -75,7 +97,11 @@ function init(rootEl: HTMLElement, formElements: FormElements, options: AddressF
 /**
  * Handles when a country change: set labels, reorder fields, populate zones
  */
-function handleCountryChange(rootEl: HTMLElement, formElements: FormElements, countryCode: string) {
+function handleCountryChange(
+  rootEl: HTMLElement,
+  formElements: FormElements,
+  countryCode: string
+) {
   var country = getCountry(countryCode);
 
   setEventListeners(rootEl, formElements, country);
@@ -87,16 +113,28 @@ function handleCountryChange(rootEl: HTMLElement, formElements: FormElements, co
 /**
  * Sets up event listener for country change
  */
-function setEventListeners(rootEl: HTMLElement, formElements: FormElements, country: Country) {
+function setEventListeners(
+  rootEl: HTMLElement,
+  formElements: FormElements,
+  country: Country
+) {
   formElements.country.input.addEventListener('change', function(event) {
-    handleCountryChange(rootEl, formElements, (event.target as HTMLSelectElement).value);
+    handleCountryChange(
+      rootEl,
+      formElements,
+      (event.target as HTMLSelectElement).value
+    );
   });
 }
 
 /**
  * Reorder fields in the DOM and add data-attribute to fields given a country
  */
-function reorderFields(rootEl: HTMLElement, formElements: FormElements, country: Country) {
+function reorderFields(
+  rootEl: HTMLElement,
+  formElements: FormElements,
+  country: Country
+) {
   var formFormat = country.formatting.edit;
   var rowIndex = 0;
 
@@ -181,7 +219,6 @@ function populateZones(formElements: FormElements, country: Country) {
   if (zoneSelect.dataset.default) {
     zoneSelect.value = zoneSelect.dataset.default;
   }
-
 }
 
 /**
@@ -257,10 +294,13 @@ function getOrderedField(format: string) {
  * will returns all form elements (wrapper, input and labels) of the form.
  * See `FormElements` type for details
  */
-function loadFormElements(rootEl: HTMLElement): FormElements {
+function loadFormElements(
+  rootEl: HTMLElement,
+  inputSelectors: InputSelectors
+): FormElements {
   var elements: FormElements = {};
   Object.keys(INPUT_SELECTORS).forEach(function(inputKey) {
-    var input = rootEl.querySelector(INPUT_SELECTORS[inputKey]);
+    var input = rootEl.querySelector(inputSelectors[inputKey]);
     elements[inputKey] = input
       ? {
           wrapper: input.parentElement,
