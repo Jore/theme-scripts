@@ -88,6 +88,7 @@ function init(
   var selectedCountry = formElements.country.input
     ? formElements.country.input.value
     : null;
+  setEventListeners(rootEl, formElements);
   handleCountryChange(rootEl, formElements, selectedCountry);
   if (options.loaded) {
     options.loaded();
@@ -104,7 +105,6 @@ function handleCountryChange(
 ) {
   var country = getCountry(countryCode);
 
-  setEventListeners(rootEl, formElements, country);
   setLabels(formElements, country);
   reorderFields(rootEl, formElements, country);
   populateZones(formElements, country);
@@ -113,11 +113,7 @@ function handleCountryChange(
 /**
  * Sets up event listener for country change
  */
-function setEventListeners(
-  rootEl: HTMLElement,
-  formElements: FormElements,
-  country: Country
-) {
+function setEventListeners(rootEl: HTMLElement, formElements: FormElements) {
   formElements.country.input.addEventListener('change', function(event) {
     handleCountryChange(
       rootEl,
