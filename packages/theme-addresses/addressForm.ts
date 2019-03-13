@@ -125,10 +125,10 @@ function reorderFields(
   country: Country
 ) {
   var formFormat = country.formatting.edit;
-  var rowIndex = 0;
 
   var countryWrapper = formElements.country.wrapper;
   var afterCountry = false;
+
   getOrderedField(formFormat).forEach(function(row) {
     row.forEach(function(line) {
       formElements[line].wrapper.dataset.lineCount = row.length;
@@ -165,13 +165,16 @@ function setLabels(formElements: FormElements, country: Country) {
  */
 function populateCountries(formElements: FormElements) {
   var countrySelect = formElements.country.input;
+  var duplicatedCountrySelect = countrySelect.cloneNode(true) as HTMLSelectElement;
 
   COUNTRIES.forEach(function(country) {
     var optionElement = document.createElement('option');
     optionElement.value = country.code;
     optionElement.textContent = country.name;
-    countrySelect.appendChild(optionElement);
+    duplicatedCountrySelect.appendChild(optionElement);
   });
+
+  countrySelect.innerHTML = duplicatedCountrySelect.innerHTML;
 
   if (countrySelect.dataset.default) {
     countrySelect.value = countrySelect.dataset.default;
@@ -196,14 +199,17 @@ function populateZones(formElements: FormElements, country: Country) {
   zoneEl.wrapper.dataset.ariaHidden = 'false';
 
   var zoneSelect = zoneEl.input;
-  zoneSelect.innerHTML = '';
+  var duplicatedZoneSelect = zoneSelect.cloneNode(true) as HTMLSelectElement;
+  duplicatedZoneSelect.innerHTML = '';
 
   country.zones.forEach(function(zone) {
     var optionElement = document.createElement('option');
     optionElement.value = zone.code;
     optionElement.textContent = zone.name;
-    zoneSelect.appendChild(optionElement);
+    duplicatedZoneSelect.appendChild(optionElement);
   });
+
+  zoneSelect.innerHTML = duplicatedZoneSelect.innerHTML;
 
   if (zoneSelect.dataset.default) {
     zoneSelect.value = zoneSelect.dataset.default;
