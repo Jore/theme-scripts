@@ -53,6 +53,17 @@ Returns a Promise that will resolve when the loading is finished
 - rootElement: wrapper element of the form elements. Form fields will be appended to that element.
 - locale: locale in which you want the form labels, country names and zone names to be rendered
 - options:
+  - inputSelectors: (optional) input selectors of inputs
+    - lastName
+    - firstName
+    - company
+    - address1
+    - address2
+    - country
+    - zone
+    - postalCode
+    - city
+    - phone
 
 ```js
 // In addresses.js
