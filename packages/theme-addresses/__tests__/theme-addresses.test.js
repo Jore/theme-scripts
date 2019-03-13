@@ -20,10 +20,8 @@ describe('AddressForm', () => {
         'https://country-service.shopifycloud.com/graphql',
         countries
       );
-      AddressForm(document.body.querySelector('[data-address="root"]'), 'en', {
-        loaded,
-      });
       countrySelect = document.body.querySelector('[name="address[country]"]');
+      AddressForm(document.body.querySelector('[data-address="root"]'), 'en').then(loaded);
     });
 
     test('use [data-default] country value if set in the DOM', () => {
@@ -131,11 +129,10 @@ describe('AddressForm', () => {
     beforeAll(loaded => {
       document.body.innerHTML = customFormHtml;
       AddressForm(document.body.querySelector('[data-address="root"]'), 'en', {
-        loaded,
         inputSelectors: {
           country: '#CustomAddressCountry',
         },
-      });
+      }).then(loaded);
       customCountrySelect = document.body.querySelector(
         '#CustomAddressCountry'
       );

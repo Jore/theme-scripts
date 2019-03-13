@@ -27,10 +27,10 @@ If you prefer not to use a package manager, you can download the latest version 
 
 ## Browser Support
 
-Theme Addresses uses the Fetch API which is not available to legacy browsers. If you wish to support legacy browsers, make sure you add the following dependencies to your project:
+Theme Addresses uses two APIs not available to legacy browsers, Fetch and Promise. If you wish to support legacy browsers, make sure you add the following dependencies to your project:
 
 ```es6
-yarn add unfetch
+yarn add unfetch es6-promise
 ```
 
 and then import them before you import Theme Addresses:
@@ -38,6 +38,7 @@ and then import them before you import Theme Addresses:
 ```es6
 // Only need to import these once
 import 'unfetch/polyfill';
+import 'es6-promise/auto';
 
 // Import @shopify/theme-address anywhere you need it
 import {AddressForm} from '@shopify/theme-addresses';
@@ -47,10 +48,11 @@ import {AddressForm} from '@shopify/theme-addresses';
 
 ### `AddressForm(rootElement, locale, options)`
 
+Returns a Promise that will resolve when the loading is finished
+
 - rootElement: wrapper element of the form elements. Form fields will be appended to that element.
 - locale: locale in which you want the form labels, country names and zone names to be rendered
 - options:
-  - loaded: callback triggered when the form has finished loading.
 
 ```js
 // In addresses.js

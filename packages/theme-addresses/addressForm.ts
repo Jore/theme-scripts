@@ -50,7 +50,6 @@ interface FormElements {
 }
 
 interface AddressFormOptions {
-  loaded?(): void;
   inputSelectors: InputSelectors;
 }
 
@@ -67,11 +66,12 @@ export default function AddressForm(
   validateElements(formElements);
 
   if (COUNTRIES) {
-    init(rootEl, formElements, options);
+    init(rootEl, formElements);
+    return Promise.resolve();
   } else {
-    loadCountries(locale).then(function(countries) {
+    return loadCountries(locale).then(function(countries) {
       COUNTRIES = countries;
-      init(rootEl, formElements, options);
+      init(rootEl, formElements);
     });
   }
 }
@@ -79,20 +79,13 @@ export default function AddressForm(
 /**
  * Runs when countries have been loaded
  */
-function init(
-  rootEl: HTMLElement,
-  formElements: FormElements,
-  options: AddressFormOptions
-) {
+function init(rootEl: HTMLElement, formElements: FormElements) {
   populateCountries(formElements);
   var selectedCountry = formElements.country.input
     ? formElements.country.input.value
     : null;
   setEventListeners(rootEl, formElements);
   handleCountryChange(rootEl, formElements, selectedCountry);
-  if (options.loaded) {
-    options.loaded();
-  }
 }
 
 /**
