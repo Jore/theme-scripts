@@ -5,7 +5,7 @@
   "description": "A collection of helpful script libraries that help you make better Shopify themes.",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --projects $(ls -d packages/**)",
     "bootstrap": "yarn && lerna bootstrap && lerna run build",
     "publish": "lerna publish",
     "build": "lerna run build",
