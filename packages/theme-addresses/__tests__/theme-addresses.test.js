@@ -21,6 +21,7 @@ describe('AddressForm', () => {
         countries
       );
       countrySelect = document.body.querySelector('[name="address[country]"]');
+      // eslint-disable-next-line promise/catch-or-return
       AddressForm(document.body.querySelector('[data-address="root"]'), 'en').then(loaded);
     });
 
@@ -128,12 +129,13 @@ describe('AddressForm', () => {
 
     beforeAll(loaded => {
       document.body.innerHTML = customFormHtml;
+      // eslint-disable-next-line promise/catch-or-return
       AddressForm(document.body.querySelector('[data-address="root"]'), 'en', {
         inputSelectors: {
           country: '#CustomAddressCountry',
         },
       }).then(loaded);
-      customCountrySelect = document.body.querySelector(
+        customCountrySelect = document.body.querySelector(
         '#CustomAddressCountry'
       );
     });

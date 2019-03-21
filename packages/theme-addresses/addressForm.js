@@ -1,10 +1,10 @@
-import {loadCountries, Country} from './loader';
+import {loadCountries} from './loader';
 import {mergeObjects} from './helpers';
 
-var COUNTRIES: Country[];
+var COUNTRIES;
 var FIELD_REGEXP = /({\w+})/g;
 var LINE_DELIMITER = '_';
-var INPUT_SELECTORS: InputSelectors = {
+var INPUT_SELECTORS = {
   lastName: '[name="address[last_name]"]',
   firstName: '[name="address[first_name]"]',
   company: '[name="address[company]"]',
@@ -17,47 +17,13 @@ var INPUT_SELECTORS: InputSelectors = {
   phone: '[name="address[phone]"]',
 };
 
-interface InputSelectors {
-  lastName?: string;
-  firstName?: string;
-  company?: string;
-  address1?: string;
-  address2?: string;
-  country?: string;
-  zone?: string;
-  postalCode?: string;
-  city?: string;
-  phone?: string;
-}
-
-interface FormElement {
-  wrapper?: HTMLElement;
-  input?: HTMLInputElement | HTMLSelectElement;
-  labels?: HTMLElement;
-}
-
-interface FormElements {
-  lastName?: FormElement;
-  firstName?: FormElement;
-  company?: FormElement;
-  address1?: FormElement;
-  address2?: FormElement;
-  country?: FormElement;
-  zone?: FormElement;
-  postalCode?: FormElement;
-  city?: FormElement;
-  phone?: FormElement;
-}
-
-interface AddressFormOptions {
-  inputSelectors: InputSelectors;
-}
-
 export default function AddressForm(
-  rootEl: HTMLElement,
-  locale: string = 'en',
-  options: AddressFormOptions = {inputSelectors: {}}
+  rootEl,
+  locale,
+  options
 ) {
+  locale = locale || 'en';
+  options = options || {inputSelectors: {}};
   var formElements = loadFormElements(
     rootEl,
     mergeObjects(INPUT_SELECTORS, options.inputSelectors)
@@ -67,7 +33,7 @@ export default function AddressForm(
 
   if (COUNTRIES) {
     init(rootEl, formElements);
-    return Promise.resolve();
+    return Promise.resolve(); // eslint-disable-line no-undef
   } else {
     return loadCountries(locale).then(function(countries) {
       COUNTRIES = countries;
@@ -79,7 +45,7 @@ export default function AddressForm(
 /**
  * Runs when countries have been loaded
  */
-function init(rootEl: HTMLElement, formElements: FormElements) {
+function init(rootEl, formElements) {
   populateCountries(formElements);
   var selectedCountry = formElements.country.input
     ? formElements.country.input.value
@@ -92,9 +58,9 @@ function init(rootEl: HTMLElement, formElements: FormElements) {
  * Handles when a country change: set labels, reorder fields, populate zones
  */
 function handleCountryChange(
-  rootEl: HTMLElement,
-  formElements: FormElements,
-  countryCode: string
+  rootEl,
+  formElements,
+  countryCode
 ) {
   var country = getCountry(countryCode);
 
@@ -106,12 +72,12 @@ function handleCountryChange(
 /**
  * Sets up event listener for country change
  */
-function setEventListeners(rootEl: HTMLElement, formElements: FormElements) {
+function setEventListeners(rootEl, formElements) {
   formElements.country.input.addEventListener('change', function(event) {
     handleCountryChange(
       rootEl,
       formElements,
-      (event.target as HTMLSelectElement).value
+      (event.target).value
     );
   });
 }
@@ -120,9 +86,9 @@ function setEventListeners(rootEl: HTMLElement, formElements: FormElements) {
  * Reorder fields in the DOM and add data-attribute to fields given a country
  */
 function reorderFields(
-  rootEl: HTMLElement,
-  formElements: FormElements,
-  country: Country
+  rootEl,
+  formElements,
+  country
 ) {
   var formFormat = country.formatting.edit;
 
@@ -152,7 +118,7 @@ function reorderFields(
 /**
  * Update labels for a given country
  */
-function setLabels(formElements: FormElements, country: Country) {
+function setLabels(formElements, country) {
   Object.keys(formElements).forEach(function(formElementName) {
     formElements[formElementName].labels.forEach(function(label) {
       label.textContent = country.labels[formElementName];
@@ -163,9 +129,9 @@ function setLabels(formElements: FormElements, country: Country) {
 /**
  * Add right countries in the dropdown for a given country
  */
-function populateCountries(formElements: FormElements) {
+function populateCountries(formElements) {
   var countrySelect = formElements.country.input;
-  var duplicatedCountrySelect = countrySelect.cloneNode(true) as HTMLSelectElement;
+  var duplicatedCountrySelect = countrySelect.cloneNode(true);
 
   COUNTRIES.forEach(function(country) {
     var optionElement = document.createElement('option');
@@ -184,7 +150,7 @@ function populateCountries(formElements: FormElements) {
 /**
  * Add right zones in the dropdown for a given country
  */
-function populateZones(formElements: FormElements, country: Country) {
+function populateZones(formElements, country) {
   var zoneEl = formElements.zone;
   if (!zoneEl) {
     return;
@@ -199,7 +165,7 @@ function populateZones(formElements: FormElements, country: Country) {
   zoneEl.wrapper.dataset.ariaHidden = 'false';
 
   var zoneSelect = zoneEl.input;
-  var duplicatedZoneSelect = zoneSelect.cloneNode(true) as HTMLSelectElement;
+  var duplicatedZoneSelect = zoneSelect.cloneNode(true);
   duplicatedZoneSelect.innerHTML = '';
 
   country.zones.forEach(function(zone) {
@@ -241,7 +207,7 @@ function validateElements(formElements) {
 /**
  * Given an countryCode (eg. 'CA'), will return the data of that country
  */
-function getCountry(countryCode: string) {
+function getCountry(countryCode) {
   countryCode = countryCode || 'CA';
   return COUNTRIES.filter(function(country) {
     return country.code === countryCode;
@@ -262,7 +228,7 @@ function getCountry(countryCode: string) {
  *   ['phone']
  * ]
  */
-function getOrderedField(format: string) {
+function getOrderedField(format) {
   return format.split(LINE_DELIMITER).map(function(fields) {
     var result = fields.match(FIELD_REGEXP);
     if (!result) {
@@ -290,10 +256,10 @@ function getOrderedField(format: string) {
  * See `FormElements` type for details
  */
 function loadFormElements(
-  rootEl: HTMLElement,
-  inputSelectors: InputSelectors
-): FormElements {
-  var elements: FormElements = {};
+  rootEl,
+  inputSelectors
+) {
+  var elements = {};
   Object.keys(INPUT_SELECTORS).forEach(function(inputKey) {
     var input = rootEl.querySelector(inputSelectors[inputKey]);
     elements[inputKey] = input

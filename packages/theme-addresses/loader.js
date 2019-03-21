@@ -26,30 +26,7 @@ var query = "query countries($locale: SupportedLocale!) {"
 
 var GRAPHQL_ENDPOINT = 'https://country-service.shopifycloud.com/graphql';
 
-export interface Country {
-  name: string;
-  code: string;
-  formatting: {
-    edit: string;
-  }
-  labels: {
-    address1: string;
-    address2: string;
-    city: string;
-    company: string;
-    country: string;
-    firstName: string;
-    lastName: string;
-    phone: string;
-    postalCode: string;
-    zone: string;
-  }
-  zones: {
-    name: string;
-    code: string;
-  }[]
-}
-export function loadCountries(locale: string): Promise<Country[]> {
+export function loadCountries(locale) {
   var response = fetch(GRAPHQL_ENDPOINT, {
     method: 'POST',
     headers: {
@@ -84,7 +61,7 @@ export var SUPPORTED_LOCALES = [
   'PT_BR',
 ];
 
-export function toSupportedLocale(locale: string) {
+export function toSupportedLocale(locale) {
   var supportedLocale = locale.replace(/-/, '_').toUpperCase();
 
   if (SUPPORTED_LOCALES.indexOf(supportedLocale) !== -1) {

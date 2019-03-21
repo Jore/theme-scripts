@@ -5,7 +5,7 @@
   "description": "A collection of helpful script libraries that help you make better Shopify themes.",
   "main": "index.js",
   "scripts": {
-    "test": "jest --projects $(ls -d packages/**)",
+    "test": "jest",
     "bootstrap": "yarn && lerna bootstrap && lerna run build",
     "publish": "lerna publish",
     "build": "lerna run build",
@@ -20,7 +20,6 @@
   "author": "Shopify Inc.",
   "license": "MIT",
   "devDependencies": {
-    "@types/jest": "^24.0.6",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-jest": "^23.0.1",
@@ -37,11 +36,7 @@
     "jquery": "3.x",
     "lerna": "^2.9.0",
     "prettier": "^1.14.2",
-    "puppeteer": "^1.4.0",
-    "rollup-plugin-typescript": "^1.0.0",
-    "ts-jest": "^23.10.5",
-    "tslib": "^1.9.3",
-    "typescript": "^3.3.3"
+    "puppeteer": "^1.4.0"
   },
   "workspaces": [
     "packages/*"

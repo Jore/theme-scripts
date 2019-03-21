@@ -1,8 +1,8 @@
-export function mergeObjects(...args: {}[]) {
+export function mergeObjects() {
   var to = Object({});
 
-  for (var index = 0; index < args.length; index++) {
-    var nextSource = args[index];
+  for (var index = 0; index < arguments.length; index++) {
+    var nextSource = arguments[index];
 
     if (nextSource) {
       for (var nextKey in nextSource) {
